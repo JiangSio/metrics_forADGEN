@@ -1,0 +1,16 @@
+classname,Accuracy
+bottle,0.8372
+capsule,0.6533
+carpet,0.4355
+leather,0.5556
+pill,0.5208
+transistor,0.6429
+tile,0.6316
+cable,0.4844
+zipper,0.4512
+toothbrush,1.0
+metal_nut,0.5781
+hazelnut,0.9167
+screw,0.5926
+grid,0.825
+wood,0.6905
