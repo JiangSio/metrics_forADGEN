@@ -22,7 +22,7 @@ def weights_init(m):
     elif classname.find('BatchNorm') != -1:
         m.weight.data.normal_(1.0, 0.02)
         m.bias.data.fill_(0)
-def test(args,obj_name, model_seg):
+def test(args,obj_name,model_seg):
     mvtec_path = args.mvtec_path
     obj_ap_pixel_list = []
     obj_auroc_pixel_list = []
@@ -30,7 +30,7 @@ def test(args,obj_name, model_seg):
     obj_auroc_image_list = []
     img_dim = 256
     model_seg.eval()
-    dataset = MVTecDRAEMTestDataset_partial(mvtec_path +'/'+ obj_name + "/test/", resize_shape=[img_dim, img_dim])
+    dataset = MVTecDRAEMTestDataset_partial(mvtec_path , obj_name ,args.json_file, resize_shape=[img_dim, img_dim])
     dataloader = DataLoader(dataset, batch_size=1,
                             shuffle=False, num_workers=0)
 
@@ -165,11 +165,12 @@ if __name__=="__main__":
     parser.add_argument('--test_separately', action='store_true',default=False)
     parser.add_argument('--reverse', action='store_true',default=False)
     parser.add_argument('--data_name',type=str, default='text_inversion')
+    parser.add_argument('--json_file', type=str)
     args = parser.parse_args()
 
     obj_batch =  [
-                     'bottle',
-                     'capsule',
+                    'bottle',
+                    'capsule',
                      'carpet',
                      'leather',
                      'pill',

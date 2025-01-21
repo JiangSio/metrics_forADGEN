@@ -6,21 +6,25 @@ import cv2
 from torchvision import transforms
 import random
 from PIL import Image
+import json
 class MVTecDRAEMTestDataset_partial(Dataset):
 
-    def __init__(self, root_dir, resize_shape=None):
+    def __init__(self, root_dir,obj_name,json_file, resize_shape=None):
         self.root_dir = root_dir
         self.resize_shape=resize_shape
         self.images=[]
-        self.anomaly_names = os.listdir(self.root_dir)
-        for idx, anomaly_name in enumerate(self.anomaly_names):
-            img_path=os.path.join(root_dir,anomaly_name)
-            img_files = os.listdir(img_path)
-            img_files.sort(key=lambda x: int(x[:3]))
-            l = len(img_files) // 3
-            if anomaly_name=='good':
-                l = 0
-            self.images += [os.path.join(img_path, file_name) for file_name in img_files[l:]]
+        with open(json_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        for c in data:
+            adtype = c['atype']
+            impath = c['impath']
+            mask = c['mask']
+            if adtype.split('+')[0]==obj_name:
+                self.images.append(os.path.join(self.root_dir,impath))
+        good_path = os.path.join(self.root_dir,obj_name,"test","good")
+        good_files = os.listdir(good_path)
+        self.images += [os.path.join(good_path,x) for x in good_files]
+
     def __len__(self):
         return len(self.images)
 

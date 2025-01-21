@@ -10,7 +10,7 @@ from sklearn.metrics import auc, roc_auc_score, average_precision_score, precisi
 import pandas as pd
 
 
-def test(obj_names, mvtec_path, checkpoint_path,result_save_path):
+def test(obj_names, mvtec_path, checkpoint_path,result_save_path,json_file):
     obj_ap_pixel_list = []
     obj_auroc_pixel_list = []
     obj_ap_image_list = []
@@ -34,7 +34,7 @@ def test(obj_names, mvtec_path, checkpoint_path,result_save_path):
         model_seg.load_state_dict(torch.load(os.path.join(checkpoint_path, run_name+".pckl"), map_location='cuda:0'))
         model_seg.cuda()
         model_seg.eval()
-        dataset = MVTecDRAEMTestDataset_partial(mvtec_path + '/'+obj_name + "/test/", resize_shape=[img_dim, img_dim])
+        dataset = MVTecDRAEMTestDataset_partial(mvtec_path ,obj_name ,json_file, resize_shape=[img_dim, img_dim])
         dataloader = DataLoader(dataset, batch_size=1,
                                 shuffle=False, num_workers=0)
 
@@ -171,6 +171,7 @@ if __name__=="__main__":
     parser.add_argument('--mvtec_path', action='store', type=str, required=True)
     parser.add_argument('--checkpoint_path',  type=str, default='checkpoints/localization')
     parser.add_argument('--result_save', type=str,default="results/loc_result.csv")
+    parser.add_argument('--json_file', type=str)
 
     args = parser.parse_args()
     if args.sample_name=='all':
@@ -195,5 +196,5 @@ if __name__=="__main__":
 
 
     with torch.cuda.device(args.gpu_id):
-        test(obj_list,args.mvtec_path, args.checkpoint_path,args.result_save)
+        test(obj_list,args.mvtec_path, args.checkpoint_path,args.result_save,args.json_file)
 
